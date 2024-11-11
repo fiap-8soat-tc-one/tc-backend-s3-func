@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  generate-token-app
+  
+  Sample SAM Template for generate-token-app
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  GenerateTokenFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./generate-token
+      Handler: main
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+        
+Outputs:
+  GenerateTokenFunction:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt GenerateTokenFunction.Arn
+  GenerateTokenFunctionIamRole:
+    Description: "Implicit IAM Role created for Generate Token function"
+    Value: !GetAtt GenerateTokenFunctionRole.Arn
