@@ -30,7 +30,7 @@ Resources:
           Properties:
             RestApiId: !Ref BasicAWSApiGateway
             Path: /token
-            Method: GET
+            Method: POST
         
 Outputs:
   BasicAWSApiGateway:
