@@ -125,39 +125,20 @@ Esse comando irá realizar a build e o deploy na AWS, pedindo algumas informaç�
 
 Você pode encontrar a URL do ponto de extremidade do API Gateway nos valores de saída exibidos após o deploy.
 
-# Appendix
+# Apêndice
 
-### Golang installation
+### Instalação Golang installation
 
-Please ensure Go 1.x (where 'x' is the latest version) is installed as per the instructions on the official golang website: https://golang.org/doc/install
-
-A quickstart way would be to use Homebrew, chocolatey or your linux package manager.
+A forma mais simples de se instalar o Go é utilizando o Homebrew, chocolatey ou um Linux Package Manager.
 
 #### Homebrew (Mac)
-
-Issue the following command from the terminal:
 
 ```shell
 brew install golang
 ```
 
-If it's already installed, run the following command to ensure it's the latest version:
-
-```shell
-brew update
-brew upgrade golang
-```
-
 #### Chocolatey (Windows)
-
-Issue the following command from the powershell:
 
 ```shell
 choco install golang
-```
-
-If it's already installed, run the following command to ensure it's the latest version:
-
-```shell
-choco upgrade golang
 ```
