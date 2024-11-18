@@ -1,96 +1,130 @@
-# generate-token-app
+# Tech Challenge Generate Token Lambda
 
-This is a sample template for generate-token-app - Below is a brief explanation of what we have generated for you:
+## O Desafio :triangular_flag_on_post:
 
+Uma lanchonete de bairro está em expansão devido ao seu grande sucesso. Entretanto, com essa expansão e a ausência de um sistema de controle de pedidos, o atendimento aos clientes pode tornar-se caótico e confuso. Por exemplo, imagine que um cliente faça um pedido complexo, como um hambúrguer personalizado com ingredientes específicos, acompanhado de batatas fritas e uma bebida. O atendente pode anotar o pedido em um papel e entregá-lo à cozinha, mas não há garantia de que o pedido será preparado corretamente.
+
+Sem um sistema de controle de pedidos, pode haver confusão entre os atendentes e a cozinha, resultando em atrasos na preparação e entrega dos pedidos. Pedidos podem ser perdidos, mal interpretados ou esquecidos, levando à insatisfação dos clientes e à perda de negócios.
+
+Em resumo, um sistema de controle de pedidos é essencial para garantir que a lanchonete possa atender os clientes de maneira eficiente, gerenciando seus pedidos e estoques de forma adequada. Sem ele, a expansão da lanchonete pode não ser bem-sucedida, resultando em clientes insatisfeitos e impactando negativamente os negócios.
+
+Para solucionar o problema, a lanchonete irá investir em um sistema de autoatendimento de fast food, composto por uma série de dispositivos e interfaces que permitem aos clientes selecionar e fazer pedidos sem precisar interagir com um atendente, com as seguintes funcionalidades:
+
+1. **Pedido**
+    - Os clientes são apresentados a uma interface de seleção na qual podem optar por se identificarem via CPF, se cadastrarem com nome e e-mail, ou não se identificar. A montagem do combo segue a sequência a seguir, sendo todas as etapas opcionais:
+        - Lanche
+        - Acompanhamento
+        - Bebida
+        - Sobremesa
+
+**Em cada etapa, são exibidos o nome, descrição e preço de cada produto.**
+
+2. **Pagamento**
+    - O sistema deverá possuir uma opção de pagamento integrada para o MVP, sendo a forma de pagamento oferecida via QRCode do Mercado Pago.
+    - Nesse MVP, será realizado um `fake checkout` para o fluxo de pagamento, sem integração direta com o Mercado Pago.
+
+3. **Acompanhamento**
+    - Uma vez que o pedido é confirmado e pago, ele é enviado para a cozinha para ser preparado. Simultaneamente, deve aparecer em um monitor para o cliente acompanhar o progresso do seu pedido com as seguintes etapas:
+        - Recebido
+        - Em preparação
+        - Pronto
+        - Finalizado
+
+4. **Entrega**
+    - Quando o pedido estiver pronto, o sistema deverá notificar o cliente que ele está disponível para retirada. Ao ser retirado, o pedido deve ser atualizado para o status finalizado.
+
+**Além das etapas do cliente, o estabelecimento precisa de um acesso administrativo:**
+
+1. **Gerenciar clientes**
+    - Com a identificação dos clientes, o estabelecimento pode trabalhar em campanhas promocionais.
+
+2. **Gerenciar produtos e categorias**
+    - Os produtos dispostos para escolha do cliente serão gerenciados pelo estabelecimento, definindo nome, categoria, preço, descrição e imagens. Para esse sistema, teremos categorias fixas:
+        - Lanche
+        - Acompanhamento
+        - Bebida
+        - Sobremesa
+
+3. **Acompanhamento de pedidos**
+    - Deve ser possível acompanhar os pedidos em andamento e o tempo de espera de cada pedido.
+
+As informações dispostas no sistema de pedidos precisarão ser gerenciadas pelo estabelecimento através de um painel administrativo.
+
+## Equipe :construction_worker:
+
+- Myller Lobo
+- Jean Carlos
+- Caio Isikawa
+- Vanderly
+- Thiago
+
+## Pré-Requisitos :exclamation:
+
+- AWS Cli
+- Docker
+- Golang
+- SAM Cli
+
+---
+
+## Descricao do Projeto
 ```bash
 .
-├── Makefile                    <-- Make to automate build
-├── README.md                   <-- This instructions file
-├── generate-token                 <-- Source code for a lambda function
-│   ├── main.go                 <-- Lambda function code
-│   └── main_test.go            <-- Unit tests
+├── Makefile                    <-- Comandos make para build do lambda function
+├── README.md                   <-- Documentacao e instrucoes de uso
+├── generate-token              
+│   ├── main.go                 <-- Codigo fonte do Lambda function
+│   └── main_test.go            <-- Testes Unitarios
 └── template.yaml
 ```
 
-## Requirements
-
-* AWS CLI already configured with Administrator permission
-* [Docker installed](https://www.docker.com/community-edition)
-* [Golang](https://golang.org)
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-
-## Setup process
+## Configuração de Ambiente de Desenvolvimento Local  :heavy_check_mark:
 
 ### Installing dependencies & building the target 
 
-In this example we use the built-in `sam build` to automatically download all the dependencies and package our build target.   
-Read more about [SAM Build here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html) 
+A aplicação utiliza o comando `sam build` para baixar todas as dependencias e pacotes.   
+Para mais detalhes leia [SAM Build here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html) 
 
-The `sam build` command is wrapped inside of the `Makefile`. To execute this simply run
+O comando `sam build` também pode ser invocado via `Makefile`, utilizando o seguinte comando.
  
 ```shell
 make
 ```
 
-### Local development
+### Invocando o lambda function localmente
 
-**Invoking function locally through local API Gateway**
+```bash
+sam local invoke
+```
+
+### Invocando o lambda function através de um API Gateway local
 
 ```bash
 sam local start-api
 ```
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/generatetoken`
+Se o comando anterior retornar sucesso, deverá ser possível acessar o Lambda function através da URL `http://localhost:3000/generatetoken`
 
-**SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
+**SAM CLI** é utilizado para emular o Lambda e o API Gateway localmente usando o arquivo `template.yaml`
 
-```yaml
-...
-Events:
-    GenerateToken:
-        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-        Properties:
-            Path: /generatetoken
-            Method: get
-```
+## Deployment
 
-## Packaging and deployment
-
-AWS Lambda Golang runtime requires a flat folder with the executable generated on build step. SAM will use `CodeUri` property to know where to look up for the application:
-
-```yaml
-...
-    FirstFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            CodeUri: generate_token/
-            ...
-```
-
-To deploy your application for the first time, run the following in your shell:
+Para realizar o deploy do Lambda function pela primeira vez, rode o seguinte comando:
 
 ```bash
 sam deploy --guided
 ```
 
-The command will package and deploy your application to AWS, with a series of prompts:
+Esse comando irá realizar a build e o deploy na AWS, pedindo algumas informações:
 
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+* **Stack Name**: O nome da stack para realizar deploy no CloudFormation. O valor deve ser único na conta e na região.
+* **AWS Region**: TheA região AWS em que será realizado o deploy do Lambda func.
+* **Confirm changes before deploy**: Se respondido com 'yes', atodas as alterações serão listadas para uma revisão manual antes do deploy.
+* **Allow SAM CLI IAM role creation**: Muitos modelos do AWS SAM, incluindo este, criam funções do AWS IAM necessárias para as funções do AWS Lambda incluídas para acessar os serviços da AWS. Por padrão, elas são limitadas às permissões mínimas necessárias. Para implantar uma stack do AWS CloudFormation que cria ou modifica funções do IAM, o valor `CAPABILITY_IAM` para `capabilities` deve ser fornecido. Se a permissão não for fornecida por meio deste prompt, para implantar este exemplo, você deve passar explicitamente `--capabilities CAPABILITY_IAM` para o comando `sam deploy`.
+* **Save arguments to samconfig.toml**: Se respondido com 'yes', suas escolhas serão salvas em um arquivo de configuração dentro do projeto, para que no futuro você possa executar novamente `sam deploy` sem parâmetros para implantar alterações em seu aplicativo.
 
-You can find your API Gateway Endpoint URL in the output values displayed after deployment.
+Você pode encontrar a URL do ponto de extremidade do API Gateway nos valores de saída exibidos após o deploy.
 
-### Testing
-
-We use `testing` package that is built-in in Golang and you can simply run the following command to run our tests:
-
-```shell
-cd ./generate-token/
-go test -v .
-```
 # Appendix
 
 ### Golang installation
@@ -127,15 +161,3 @@ If it's already installed, run the following command to ensure it's the latest v
 ```shell
 choco upgrade golang
 ```
-
-## Bringing to the next level
-
-Here are a few ideas that you can use to get more acquainted as to how this overall process works:
-
-* Create an additional API resource (e.g. /generatetoken/{proxy+}) and return the name requested through this new path
-* Update unit test to capture that
-* Package & Deploy
-
-Next, you can use the following resources to know more about beyond generate token samples and how others structure their Serverless applications:
-
-* [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)

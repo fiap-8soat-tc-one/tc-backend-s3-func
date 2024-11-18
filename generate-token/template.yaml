@@ -11,6 +11,11 @@ Globals:
     Timeout: 3
 
 Resources:
+  BasicAWSApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Basic AWS Api Gateway
+      StageName: Staging
   GenerateTokenFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -19,8 +24,27 @@ Resources:
       Runtime: go1.x
       Architectures:
         - x86_64
+      Events:
+        GenerateTokenApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BasicAWSApiGateway
+            Path: /token
+            Method: GET
         
 Outputs:
+  BasicAWSApiGateway:
+    Description: 'API Gateway endpoint URL for Staging stage for Generate Token function'
+    Value: !Sub 'https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/token/'
+  BasicAWSApiGatewayRestApiId:
+    Description: 'API Gateway ARN for Basic AWS API Gateway'
+    Value: !Ref BasicAWSApiGateway
+    Export:
+      Name: BasicAWSApiGateway-RestApiId
+  BasicAWSApiGatewayRootResourceId:
+    Value: !GetAtt BasicAWSApiGateway.RootResourceId
+    Export:
+      Name: BasicAWSApiGateway-RootResourceId
   GenerateTokenFunction:
     Description: "First Lambda Function ARN"
     Value: !GetAtt GenerateTokenFunction.Arn
