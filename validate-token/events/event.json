@@ -1,0 +1,7 @@
+{
+  "authorization" : {
+    "type": "bearer",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNTE2MjM5MDIyfQ.1"
+
+  }
+}

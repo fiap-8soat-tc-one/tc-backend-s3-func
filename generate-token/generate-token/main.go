@@ -10,10 +10,11 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/go-playground/validator/v10"
 )
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var postGenerateTokenUrl = os.Getenv("POST_GENERATE_TOKEN_URL")
+	var postValidateTokenUrl = os.Getenv("GENERATE_TOKEN_URL")
 	requestBody := struct {
 		Document string `json:"document"`
 	}{}
@@ -33,7 +34,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}, nil
 	}
 
-	resp, err := http.Post(postGenerateTokenUrl, "application/json", strings.NewReader(request.Body))
+	resp, err := http.Post(postValidateTokenUrl, "application/json", strings.NewReader(request.Body))
 	if err != nil {
 		log.Printf("Error getting access token: %v", err)
 		return events.APIGatewayProxyResponse{
@@ -56,11 +57,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	// Validate the response before returning it
 	accessTokenResponse := struct {
-		AccessToken string `json:"access_token"`
-		Profile     string `json:"profile"`
+		AccessToken string `json:"access_token" validate:"required"`
+		Profile     string `json:"profile" validate:"required"`
 	}{}
 	err = json.Unmarshal(body, &accessTokenResponse)
-	if err != nil {
+	if err != nil || validator.New().Struct(accessTokenResponse) != nil {
 		log.Printf("Response: %s", body)
 		log.Printf("Error parsing access token: %v", err)
 		return events.APIGatewayProxyResponse{

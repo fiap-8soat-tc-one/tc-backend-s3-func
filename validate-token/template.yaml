@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  generate-token-app
+  validate-token-app
   
-  Sample SAM Template for generate-token-app
+  Sample SAM Template for validate-token-app
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -16,26 +16,26 @@ Resources:
     Properties:
       Name: Basic AWS Api Gateway
       StageName: Staging
-  GenerateTokenFunction:
+  ValidateTokenFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: ./generate-token
+      CodeUri: ./validate-token
       Handler: main
       Runtime: go1.x
       Architectures:
         - x86_64
       Events:
-        GenerateTokenApi:
+        ValidateTokenApi:
           Type: Api
           Properties:
             RestApiId: !Ref BasicAWSApiGateway
-            Path: /generate-token
+            Path: /validate-token
             Method: POST
         
 Outputs:
   BasicAWSApiGateway:
-    Description: 'API Gateway endpoint URL for Staging stage for Generate Token function'
-    Value: !Sub 'https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/generate-token/'
+    Description: 'API Gateway endpoint URL for Staging stage for Validate Token function'
+    Value: !Sub 'https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/validate-token/'
   BasicAWSApiGatewayRestApiId:
     Description: 'API Gateway ARN for Basic AWS API Gateway'
     Value: !Ref BasicAWSApiGateway
@@ -45,9 +45,9 @@ Outputs:
     Value: !GetAtt BasicAWSApiGateway.RootResourceId
     Export:
       Name: BasicAWSApiGateway-RootResourceId
-  GenerateTokenFunction:
+  ValidateTokenFunction:
     Description: "First Lambda Function ARN"
-    Value: !GetAtt GenerateTokenFunction.Arn
-  GenerateTokenFunctionIamRole:
-    Description: "Implicit IAM Role created for Generate Token function"
-    Value: !GetAtt GenerateTokenFunctionRole.Arn
+    Value: !GetAtt ValidateTokenFunction.Arn
+  ValidateTokenFunctionIamRole:
+    Description: "Implicit IAM Role created for Validate Token function"
+    Value: !GetAtt ValidateTokenFunctionRole.Arn
