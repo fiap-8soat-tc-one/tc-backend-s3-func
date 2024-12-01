@@ -118,7 +118,7 @@ sam deploy --guided
 Esse comando irá realizar a build e o deploy na AWS, pedindo algumas informações:
 
 * **Stack Name**: O nome da stack para realizar deploy no CloudFormation. O valor deve ser único na conta e na região.
-* **AWS Region**: TheA região AWS em que será realizado o deploy do Lambda func.
+* **AWS Region**: The região AWS em que será realizado o deploy do Lambda func.
 * **Confirm changes before deploy**: Se respondido com 'yes', atodas as alterações serão listadas para uma revisão manual antes do deploy.
 * **Allow SAM CLI IAM role creation**: Muitos modelos do AWS SAM, incluindo este, criam funções do AWS IAM necessárias para as funções do AWS Lambda incluídas para acessar os serviços da AWS. Por padrão, elas são limitadas às permissões mínimas necessárias. Para implantar uma stack do AWS CloudFormation que cria ou modifica funções do IAM, o valor `CAPABILITY_IAM` para `capabilities` deve ser fornecido. Se a permissão não for fornecida por meio deste prompt, para implantar este exemplo, você deve passar explicitamente `--capabilities CAPABILITY_IAM` para o comando `sam deploy`.
 * **Save arguments to samconfig.toml**: Se respondido com 'yes', suas escolhas serão salvas em um arquivo de configuração dentro do projeto, para que no futuro você possa executar novamente `sam deploy` sem parâmetros para implantar alterações em seu aplicativo.
