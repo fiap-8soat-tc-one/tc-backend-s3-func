@@ -29,13 +29,13 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref BasicAWSApiGateway
-            Path: /token
+            Path: /validate-token
             Method: POST
         
 Outputs:
   BasicAWSApiGateway:
     Description: 'API Gateway endpoint URL for Staging stage for Validate Token function'
-    Value: !Sub 'https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/token/'
+    Value: !Sub 'https://${BasicAWSApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Staging/validate-token/'
   BasicAWSApiGatewayRestApiId:
     Description: 'API Gateway ARN for Basic AWS API Gateway'
     Value: !Ref BasicAWSApiGateway
