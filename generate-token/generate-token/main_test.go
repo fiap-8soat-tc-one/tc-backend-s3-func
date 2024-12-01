@@ -11,29 +11,43 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	os.Setenv("VALIDATE_TOKEN_URL", "http://example.com/validate")
+	os.Setenv("POST_GENERATE_TOKEN_URL", "http://example.com/token")
 
 	tests := []struct {
 		name           string
-		headers        map[string]string
+		requestBody    string
 		mockResponse   string
 		mockStatusCode int
 		expectedBody   string
 		expectedStatus int
 	}{
 		{
-			name:           "Valid Authorization header",
-			headers:        map[string]string{"Authorization": "valid_token"},
-			mockResponse:   `{"status":"valid"}`,
+			name:           "Valid request",
+			requestBody:    `{"document":"test"}`,
+			mockResponse:   `{"access_token":"token123","profile":"profile123"}`,
 			mockStatusCode: http.StatusOK,
-			expectedBody:   "",
+			expectedBody:   `{"access_token":"token123","profile":"profile123"}`,
 			expectedStatus: http.StatusOK,
 		},
 		{
-			name:           "Missing Authorization header",
-			headers:        map[string]string{},
-			expectedBody:   "Required Authorization header",
-			expectedStatus: http.StatusUnauthorized,
+			name:           "Invalid request body",
+			requestBody:    `Not Found`,
+			expectedBody:   "Error parsing request body",
+			expectedStatus: http.StatusInternalServerError,
+		},
+		{
+			name:           "Missing document parameter",
+			requestBody:    `{"document":""}`,
+			expectedBody:   "Please provide a document parameter",
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Error in parsing access token",
+			requestBody:    `{"document":"test"}`,
+			mockResponse:   `{"invalid_token":"token123"}`,
+			mockStatusCode: http.StatusOK,
+			expectedBody:   "Error parsing access token",
+			expectedStatus: http.StatusInternalServerError,
 		},
 	}
 
@@ -46,11 +60,11 @@ func TestHandler(t *testing.T) {
 			}))
 			defer server.Close()
 
-			// Override the VALIDATE_TOKEN_URL with the mock server URL
-			os.Setenv("VALIDATE_TOKEN_URL", server.URL)
+			// Override the POST_GENERATE_TOKEN_URL with the mock server URL
+			os.Setenv("POST_GENERATE_TOKEN_URL", server.URL)
 
 			request := events.APIGatewayProxyRequest{
-				Headers: tt.headers,
+				Body: tt.requestBody,
 			}
 
 			response, err := handler(request)
