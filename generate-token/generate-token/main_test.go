@@ -11,59 +11,30 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	os.Setenv("POST_GENERATE_TOKEN_URL", "http://example.com/token")
+	os.Setenv("VALIDATE_TOKEN_URL", "http://example.com/validate")
 
 	tests := []struct {
 		name           string
-		requestBody    string
+		headers        map[string]string
 		mockResponse   string
 		mockStatusCode int
 		expectedBody   string
 		expectedStatus int
 	}{
 		{
-			name:           "Valid request",
-			requestBody:    `{"document":"test"}`,
-			mockResponse:   `{"access_token":"token123","profile":"profile123"}`,
+			name:           "Valid Authorization header",
+			headers:        map[string]string{"Authorization": "valid_token"},
+			mockResponse:   `{"status":"valid"}`,
 			mockStatusCode: http.StatusOK,
-			expectedBody:   `{"access_token":"token123","profile":"profile123"}`,
+			expectedBody:   "",
 			expectedStatus: http.StatusOK,
 		},
 		{
-			name:           "Invalid request body",
-			requestBody:    `Not Found`,
-			expectedBody:   "Error parsing request body",
-			expectedStatus: http.StatusInternalServerError,
+			name:           "Missing Authorization header",
+			headers:        map[string]string{},
+			expectedBody:   "Required Authorization header",
+			expectedStatus: http.StatusUnauthorized,
 		},
-		// {
-		// 	name:           "Missing document parameter",
-		// 	requestBody:    `{"document":""}`,
-		// 	expectedBody:   "Please provide a document parameter",
-		// 	expectedStatus: http.StatusBadRequest,
-		// },
-		// {
-		// 	name:           "Error in HTTP POST request",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockStatusCode: http.StatusInternalServerError,
-		// 	expectedBody:   "Error getting access token",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
-		// {
-		// 	name:           "Error in reading response body",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockResponse:   ``,
-		// 	mockStatusCode: http.StatusOK,
-		// 	expectedBody:   "Error reading access token response",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
-		// {
-		// 	name:           "Error in parsing access token",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockResponse:   `{"access_token":"token123"}`,
-		// 	mockStatusCode: http.StatusOK,
-		// 	expectedBody:   "Error parsing access token",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
 	}
 
 	for _, tt := range tests {
@@ -75,11 +46,11 @@ func TestHandler(t *testing.T) {
 			}))
 			defer server.Close()
 
-			// Override the POST_GENERATE_TOKEN_URL with the mock server URL
-			os.Setenv("POST_GENERATE_TOKEN_URL", server.URL)
+			// Override the VALIDATE_TOKEN_URL with the mock server URL
+			os.Setenv("VALIDATE_TOKEN_URL", server.URL)
 
 			request := events.APIGatewayProxyRequest{
-				Body: tt.requestBody,
+				Headers: tt.headers,
 			}
 
 			response, err := handler(request)
