@@ -11,7 +11,7 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	os.Setenv("POST_GENERATE_TOKEN_URL", "http://example.com/token")
+	os.Setenv("GENERATE_TOKEN_URL", "http://example.com/token")
 
 	tests := []struct {
 		name           string
@@ -60,8 +60,8 @@ func TestHandler(t *testing.T) {
 			}))
 			defer server.Close()
 
-			// Override the POST_GENERATE_TOKEN_URL with the mock server URL
-			os.Setenv("POST_GENERATE_TOKEN_URL", server.URL)
+			// Override the GENERATE_TOKEN_URL with the mock server URL
+			os.Setenv("GENERATE_TOKEN_URL", server.URL)
 
 			request := events.APIGatewayProxyRequest{
 				Body: tt.requestBody,

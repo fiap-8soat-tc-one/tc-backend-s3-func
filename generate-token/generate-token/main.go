@@ -14,7 +14,7 @@ import (
 )
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var postValidateTokenUrl = os.Getenv("POST_GENERATE_TOKEN_URL")
+	var postValidateTokenUrl = os.Getenv("GENERATE_TOKEN_URL")
 	requestBody := struct {
 		Document string `json:"document"`
 	}{}
