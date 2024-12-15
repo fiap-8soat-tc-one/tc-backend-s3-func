@@ -11,7 +11,7 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	os.Setenv("POST_GENERATE_TOKEN_URL", "http://example.com/token")
+	os.Setenv("GENERATE_TOKEN_URL", "http://example.com/token")
 
 	tests := []struct {
 		name           string
@@ -35,35 +35,20 @@ func TestHandler(t *testing.T) {
 			expectedBody:   "Error parsing request body",
 			expectedStatus: http.StatusInternalServerError,
 		},
-		// {
-		// 	name:           "Missing document parameter",
-		// 	requestBody:    `{"document":""}`,
-		// 	expectedBody:   "Please provide a document parameter",
-		// 	expectedStatus: http.StatusBadRequest,
-		// },
-		// {
-		// 	name:           "Error in HTTP POST request",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockStatusCode: http.StatusInternalServerError,
-		// 	expectedBody:   "Error getting access token",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
-		// {
-		// 	name:           "Error in reading response body",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockResponse:   ``,
-		// 	mockStatusCode: http.StatusOK,
-		// 	expectedBody:   "Error reading access token response",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
-		// {
-		// 	name:           "Error in parsing access token",
-		// 	requestBody:    `{"document":"test"}`,
-		// 	mockResponse:   `{"access_token":"token123"}`,
-		// 	mockStatusCode: http.StatusOK,
-		// 	expectedBody:   "Error parsing access token",
-		// 	expectedStatus: http.StatusInternalServerError,
-		// },
+		{
+			name:           "Missing document parameter",
+			requestBody:    `{"document":""}`,
+			expectedBody:   "Please provide a document parameter",
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Error in parsing access token",
+			requestBody:    `{"document":"test"}`,
+			mockResponse:   `{"invalid_token":"token123"}`,
+			mockStatusCode: http.StatusOK,
+			expectedBody:   "Error parsing access token",
+			expectedStatus: http.StatusInternalServerError,
+		},
 	}
 
 	for _, tt := range tests {
@@ -75,8 +60,8 @@ func TestHandler(t *testing.T) {
 			}))
 			defer server.Close()
 
-			// Override the POST_GENERATE_TOKEN_URL with the mock server URL
-			os.Setenv("POST_GENERATE_TOKEN_URL", server.URL)
+			// Override the GENERATE_TOKEN_URL with the mock server URL
+			os.Setenv("GENERATE_TOKEN_URL", server.URL)
 
 			request := events.APIGatewayProxyRequest{
 				Body: tt.requestBody,
