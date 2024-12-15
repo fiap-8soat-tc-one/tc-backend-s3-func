@@ -11,7 +11,7 @@ import (
 )
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var validateTokenUrl = os.Getenv("VALIDATE_TOKEN_URL")
+	var validateTokenUrl = os.Getenv("BACKEND_URL")
 	var authorizationHeader = request.Headers["Authorization"]
 
 	if authorizationHeader == "" {
