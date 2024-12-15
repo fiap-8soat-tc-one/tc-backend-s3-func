@@ -1,0 +1,65 @@
+name: Build Deploy API Gateway With Lambdas
+
+on:
+  workflow_dispatch:  # Configuração para deploy manual
+env:
+  BACKEND_URL: http://a3fdeabc4b7b54d08bec2b5d850b1bc7-1605196733.us-east-1.elb.amazonaws.com
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+
+      - name: Build validate_token
+        run: |
+          cd src/funcs/validate_token
+          go build -o main  main.go
+          zip validate_token.zip main
+
+      - name: Build generate_token
+        run: |
+          cd src/funcs/generate_token
+          go build -o main  main.go
+          zip generate_token.zip main
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.8
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+
+      - name: Initialize Terraform
+        working-directory: ./src/infra
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ./src/infra
+        env:
+          TF_VAR_backend_url: ${{ env.BACKEND_URL }}   
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ./src/infra
+        env:
+          TF_VAR_backend_url: ${{ env.BACKEND_URL }}      
+        run: terraform apply -auto-approve tfplan 
