@@ -60,5 +60,5 @@ jobs:
       - name: Terraform Apply
         working-directory: ./src/infra
         env:
-          TF_VAR_backend_url: ${{ vars.BACKEND_URL }}      
+          TF_VAR_backend_url: ${{ vars.BACKEND_URL }}     
         run: terraform apply -auto-approve tfplan 

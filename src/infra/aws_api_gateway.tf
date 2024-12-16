@@ -52,7 +52,7 @@ resource "aws_api_gateway_integration" "api_integration" {
   http_method             = aws_api_gateway_method.api_get.http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = var.backend_url
+  uri                     = "${var.backend_url}/api"
 }
 
 # Lambda Authorizer para validação de token
