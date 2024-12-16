@@ -23,14 +23,14 @@ jobs:
       - name: Build validate_token
         run: |
           cd src/funcs/validate_token
-          go build -o main  main.go
-          zip validate_token.zip main
+          GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+          zip validate_token.zip bootstrap
 
       - name: Build generate_token
         run: |
           cd src/funcs/generate_token
-          go build -o main  main.go
-          zip generate_token.zip main
+          GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+          zip generate_token.zip bootstrap
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
