@@ -2,8 +2,6 @@ name: Build Deploy API Gateway With Lambdas
 
 on:
   workflow_dispatch:  # Configuração para deploy manual
-env:
-  BACKEND_URL: a700b595eada74e749e77434a31e42a0-23501482.us-east-1.elb.amazonaws.com
 
 jobs:
   build:
@@ -44,9 +42,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Get Session Token
+        run: echo aws sts get-session-token
 
       - name: Initialize Terraform
         working-directory: ./src/infra
@@ -55,11 +54,11 @@ jobs:
       - name: Terraform Plan
         working-directory: ./src/infra
         env:
-          TF_VAR_backend_url: ${{ env.BACKEND_URL }}   
+          TF_VAR_backend_url: ${{ vars.BACKEND_URL }}   
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./src/infra
         env:
-          TF_VAR_backend_url: ${{ env.BACKEND_URL }}      
+          TF_VAR_backend_url: ${{ vars.BACKEND_URL }}      
         run: terraform apply -auto-approve tfplan 
