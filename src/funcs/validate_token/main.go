@@ -12,7 +12,7 @@ import (
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var validateTokenUrl = os.Getenv("BACKEND_URL")
-	var authorizationHeader = request.Headers["Authorization"]
+	var authorizationHeader = request.Headers["X-Authorization-Token"]
 
 	if authorizationHeader == "" {
 		return events.APIGatewayProxyResponse{
@@ -22,6 +22,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	requestBody := `{"access_token":"` + authorizationHeader + `"}`
+	log.Printf("validation-toke-url: %v", validateTokenUrl)
+	log.Printf("validation-toke-body: %v", requestBody)
+
 	resp, err := http.Post(validateTokenUrl, "application/json", strings.NewReader(requestBody))
 	if err != nil {
 		log.Printf("Error validating access token: %v", err)
