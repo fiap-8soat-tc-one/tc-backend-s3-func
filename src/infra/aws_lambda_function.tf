@@ -8,7 +8,7 @@ resource "aws_lambda_function" "validate_token" {
 
   environment {
     variables = {
-      BACKEND_URL = var.backend_url
+      BACKEND_URL = "${var.backend_url}/api/public/v1/oauth/token/validate"
     }
   }
 }
@@ -23,7 +23,7 @@ resource "aws_lambda_function" "generate_token" {
 
   environment {
     variables = {
-      BACKEND_URL = var.backend_url
+      BACKEND_URL = "${var.backend_url}/api/public/v1/oauth/token"
     }
   }
 }
