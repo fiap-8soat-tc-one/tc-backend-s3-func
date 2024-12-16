@@ -23,13 +23,13 @@ jobs:
       - name: Build validate_token
         run: |
           cd src/funcs/validate_token
-          GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap main.go
           zip validate_token.zip bootstrap
 
       - name: Build generate_token
         run: |
           cd src/funcs/generate_token
-          GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap main.go
           zip generate_token.zip bootstrap
 
       - name: Setup Terraform
