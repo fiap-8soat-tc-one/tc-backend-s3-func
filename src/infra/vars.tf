@@ -8,5 +8,5 @@ variable "region" {
 variable "backend_url" {
   description = "backend url"
   type        = string
-  default     = "http://a3fdeabc4b7b54d08bec2b5d850b1bc7-1605196733.us-east-1.elb.amazonaws.com"
+  default     = "http://a700b595eada74e749e77434a31e42a0-23501482.us-east-1.elb.amazonaws.com"
 }
