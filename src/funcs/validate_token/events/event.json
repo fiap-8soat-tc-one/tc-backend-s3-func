@@ -1,7 +1,4 @@
 {
-  "authorization" : {
-    "type": "bearer",
-    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNTE2MjM5MDIyfQ.1"
-
-  }
+  "type": "TOKEN",
+  "authorizationToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4ODQwNDA3MTAzOSIsImlkIjoiM2ZhODVmNjQtNTcxNy00NTYyLWIzZmMtMmM5NjNmNjZhZmE2IiwibmFtZSI6Ik15bGxlciBTYWthZ3VjaGkiLCJlbWFpbCI6Im15bGxlcnNha2FndWNoaUBnbWFpbC5jb20iLCJkb2N1bWVudCI6Ijg4NDA0MDcxMDM5IiwiaWF0IjoxNzM0Mzk3NDQ2LCJleHAiOjE3MzQ0MDEwNDZ9.nYxOY1fetVCCfBoBVkdXhWVGWcWEfooYJ1A9VUWiNl8Oh7jwPxw_zRQorQkHugAiPIiJEmlHTZvocfCDM7CLlQ"
 }
